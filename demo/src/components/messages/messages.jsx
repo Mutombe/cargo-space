@@ -1,117 +1,170 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  MessageSquare, Send, User, ArrowLeft, 
-  Search, MoreVertical, Clock, Check, CheckCheck 
-} from 'lucide-react';
-import Header from '../nav/nav';
-import { useAuth } from '../context/authContext';
-import { Button } from '../ui/button';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  MessageSquare,
+  Send,
+  User,
+  ArrowLeft,
+  Search,
+  MoreVertical,
+  Clock,
+  Check,
+  CheckCheck,
+} from "lucide-react";
+import Header from "../nav/nav";
+import { useAuth } from "../context/authContext";
+import { Button } from "../ui/button";
 
 const Messages = () => {
   const { user } = useAuth();
   const [activeChat, setActiveChat] = useState(null);
-  const [message, setMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [message, setMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const getDriverImage = (driverId) => {
+    const driverImages = {
+      1: "/driver1.webp",
+      2: "/driver2.png",
+      3: "driver3.webp",
+      4: "driver4.jpg",
+    };
+
+    // Return image based on driver ID, or use a default if not found
+    return driverImages[driverId] || driverImages[1];
+  };
 
   // Dummy conversations data
   const conversations = [
     {
-      id: '1',
+      id: "1",
       driver: {
-        id: '1',
-        name: 'Tinashe Chikomo',
-        vehicle: 'Toyota Hilux',
-        profilePic: null
+        id: "1",
+        name: "Tinashe Chikomo",
+        vehicle: "Toyota Hilux",
+        profilePic: null,
       },
       cargo: {
-        id: '123',
-        title: 'Office Furniture',
-        status: 'in-transit'
+        id: "123",
+        title: "Office Furniture",
+        status: "in-transit",
       },
       messages: [
-        { id: '1', sender: 'driver', text: 'Hello, I can pick up your cargo in 15 minutes', time: '10:30 AM' },
-        { id: '2', sender: 'user', text: 'That sounds good. See you soon!', time: '10:32 AM' },
-        { id: '3', sender: 'driver', text: 'I\'m at the pickup location. Where should I meet you?', time: '10:45 AM' }
+        {
+          id: "1",
+          sender: "driver",
+          text: "Hello, I can pick up your cargo in 15 minutes",
+          time: "10:30 AM",
+        },
+        {
+          id: "2",
+          sender: "user",
+          text: "That sounds good. See you soon!",
+          time: "10:32 AM",
+        },
+        {
+          id: "3",
+          sender: "driver",
+          text: "I'm at the pickup location. Where should I meet you?",
+          time: "10:45 AM",
+        },
       ],
       unread: 0,
-      lastActive: '10:45 AM'
+      lastActive: "10:45 AM",
     },
     {
-      id: '2',
+      id: "2",
       driver: {
-        id: '2',
-        name: 'Takunda Moyo',
-        vehicle: 'Honda XR150',
-        profilePic: null
+        id: "2",
+        name: "Takunda Moyo",
+        vehicle: "Honda XR150",
+        profilePic: null,
       },
       cargo: {
-        id: '124',
-        title: 'Documents',
-        status: 'delivered'
+        id: "124",
+        title: "Documents",
+        status: "delivered",
       },
       messages: [
-        { id: '1', sender: 'driver', text: 'Your documents have been delivered', time: 'Yesterday' },
-        { id: '2', sender: 'user', text: 'Thank you for the quick delivery!', time: 'Yesterday' }
+        {
+          id: "1",
+          sender: "driver",
+          text: "Your documents have been delivered",
+          time: "Yesterday",
+        },
+        {
+          id: "2",
+          sender: "user",
+          text: "Thank you for the quick delivery!",
+          time: "Yesterday",
+        },
       ],
       unread: 0,
-      lastActive: 'Yesterday'
+      lastActive: "Yesterday",
     },
     {
-      id: '3',
+      id: "3",
       driver: {
-        id: '3',
-        name: 'Fleet Logistics',
-        vehicle: 'Isuzu NQR',
-        profilePic: null
+        id: "3",
+        name: "Fleet Logistics",
+        vehicle: "Isuzu NQR",
+        profilePic: null,
       },
       cargo: {
-        id: '125',
-        title: 'Agricultural Equipment',
-        status: 'pending'
+        id: "125",
+        title: "Agricultural Equipment",
+        status: "pending",
       },
       messages: [
-        { id: '1', sender: 'driver', text: 'We can handle your agricultural equipment shipment', time: '2 days ago' }
+        {
+          id: "1",
+          sender: "driver",
+          text: "We can handle your agricultural equipment shipment",
+          time: "2 days ago",
+        },
       ],
       unread: 1,
-      lastActive: '2 days ago'
-    }
+      lastActive: "2 days ago",
+    },
   ];
 
-  const filteredConversations = conversations.filter(convo => 
-    convo.driver.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    convo.cargo.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredConversations = conversations.filter(
+    (convo) =>
+      convo.driver.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      convo.cargo.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSendMessage = () => {
-    if (message.trim() === '') return;
-    
+    if (message.trim() === "") return;
+
     // In a real app, this would send to a backend
     const newMessage = {
       id: Date.now().toString(),
-      sender: 'user',
+      sender: "user",
       text: message,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
-    
-    const updatedConversations = conversations.map(convo => {
+
+    const updatedConversations = conversations.map((convo) => {
       if (convo.id === activeChat.id) {
         return {
           ...convo,
           messages: [...convo.messages, newMessage],
-          lastActive: 'Just now'
+          lastActive: "Just now",
         };
       }
       return convo;
     });
-    
+
     setActiveChat({
       ...activeChat,
       messages: [...activeChat.messages, newMessage],
-      lastActive: 'Just now'
+      lastActive: "Just now",
     });
-    
-    setMessage('');
+
+    setMessage("");
   };
 
   return (
@@ -120,7 +173,11 @@ const Messages = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row h-[calc(100vh-150px)] bg-white rounded-xl shadow-md overflow-hidden">
           {/* Conversations List */}
-          <div className={`md:w-1/3 border-r border-gray-200 ${activeChat ? 'hidden md:block' : 'w-full'}`}>
+          <div
+            className={`md:w-1/3 border-r border-gray-200 ${
+              activeChat ? "hidden md:block" : "w-full"
+            }`}
+          >
             <div className="p-4 border-b border-gray-200">
               <h1 className="text-xl font-bold text-gray-800">Messages</h1>
               <div className="mt-3 relative">
@@ -136,31 +193,52 @@ const Messages = () => {
                 />
               </div>
             </div>
-            
+
             <div className="overflow-y-auto h-[calc(100vh-220px)]">
               {filteredConversations.map((conversation) => (
                 <motion.div
                   key={conversation.id}
-                  whileHover={{ backgroundColor: '#f9fafb' }}
+                  whileHover={{ backgroundColor: "#f9fafb" }}
                   className={`p-4 border-b border-gray-200 cursor-pointer flex items-center ${
-                    activeChat?.id === conversation.id ? 'bg-blue-50' : ''
+                    activeChat?.id === conversation.id ? "bg-blue-50" : ""
                   }`}
                   onClick={() => setActiveChat(conversation)}
                 >
                   <div className="flex-shrink-0 mr-4">
-                    <div className="bg-gray-200 border-2 border-dashed rounded-xl w-12 h-12" />
+                    <div className="relative w-16 h-16 mr-4">
+                      <img
+                        src="driver1.webp"
+                        alt="driver profile"
+                        className="w-16 h-16 rounded-xl object-cover border-2 border-gray-200"
+                        onError={(e) => {
+                          // Fallback to a default avatar if image fails to load
+                          e.target.src =
+                            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face";
+                        }}
+                      />
+                      {/* Optional: Add online status indicator */}
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                    </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-baseline">
-                      <h3 className="font-medium text-gray-800 truncate">{conversation.driver.name}</h3>
-                      <span className="text-xs text-gray-500">{conversation.lastActive}</span>
+                      <h3 className="font-medium text-gray-800 truncate">
+                        {conversation.driver.name}
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        {conversation.lastActive}
+                      </span>
                     </div>
                     <p className="text-sm text-gray-600 truncate">
                       {conversation.cargo.title}
                     </p>
                     <div className="flex justify-between mt-1">
                       <p className="text-sm text-gray-500 truncate">
-                        {conversation.messages[conversation.messages.length - 1].text}
+                        {
+                          conversation.messages[
+                            conversation.messages.length - 1
+                          ].text
+                        }
                       </p>
                       {conversation.unread > 0 && (
                         <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-blue-600 rounded-full">
@@ -173,14 +251,14 @@ const Messages = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Chat Window */}
-          <div className={`flex-1 ${!activeChat ? 'hidden md:flex' : 'flex'}`}>
+          <div className={`flex-1 ${!activeChat ? "hidden md:flex" : "flex"}`}>
             {activeChat ? (
               <div className="flex flex-col h-full w-full">
                 {/* Chat Header */}
                 <div className="p-4 border-b border-gray-200 flex items-center">
-                  <button 
+                  <button
                     className="md:hidden mr-4 p-2 rounded-md hover:bg-gray-100"
                     onClick={() => setActiveChat(null)}
                   >
@@ -189,8 +267,12 @@ const Messages = () => {
                   <div className="flex items-center">
                     <div className="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10 mr-3" />
                     <div>
-                      <h2 className="font-bold text-gray-800">{activeChat.driver.name}</h2>
-                      <p className="text-sm text-gray-600">{activeChat.driver.vehicle}</p>
+                      <h2 className="font-bold text-gray-800">
+                        {activeChat.driver.name}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        {activeChat.driver.vehicle}
+                      </p>
                     </div>
                   </div>
                   <div className="ml-auto">
@@ -199,7 +281,7 @@ const Messages = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
                   <div className="space-y-4">
@@ -208,21 +290,29 @@ const Messages = () => {
                         key={msg.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${
+                          msg.sender === "user"
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
                       >
                         <div
                           className={`max-w-xs md:max-w-md px-4 py-2 rounded-lg ${
-                            msg.sender === 'user'
-                              ? 'bg-blue-600 text-white rounded-br-none'
-                              : 'bg-white border border-gray-200 rounded-bl-none'
+                            msg.sender === "user"
+                              ? "bg-blue-600 text-white rounded-br-none"
+                              : "bg-white border border-gray-200 rounded-bl-none"
                           }`}
                         >
                           <p>{msg.text}</p>
-                          <div className={`text-xs mt-1 flex items-center ${
-                            msg.sender === 'user' ? 'text-blue-200' : 'text-gray-500'
-                          }`}>
+                          <div
+                            className={`text-xs mt-1 flex items-center ${
+                              msg.sender === "user"
+                                ? "text-blue-200"
+                                : "text-gray-500"
+                            }`}
+                          >
                             <span>{msg.time}</span>
-                            {msg.sender === 'user' && (
+                            {msg.sender === "user" && (
                               <span className="ml-2">
                                 <CheckCheck size={12} />
                               </span>
@@ -233,7 +323,7 @@ const Messages = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Message Input */}
                 <div className="p-4 border-t border-gray-200">
                   <div className="flex items-center">
@@ -243,9 +333,11 @@ const Messages = () => {
                       placeholder="Type your message..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" && handleSendMessage()
+                      }
                     />
-                    <Button 
+                    <Button
                       className="rounded-l-none rounded-r-md h-full"
                       onClick={handleSendMessage}
                     >
@@ -257,10 +349,16 @@ const Messages = () => {
             ) : (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center p-8">
-                  <MessageSquare size={48} className="text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-800 mb-2">No conversation selected</h3>
+                  <MessageSquare
+                    size={48}
+                    className="text-gray-300 mx-auto mb-4"
+                  />
+                  <h3 className="text-xl font-medium text-gray-800 mb-2">
+                    No conversation selected
+                  </h3>
                   <p className="text-gray-600 max-w-md">
-                    Select a conversation from the list to start messaging, or start a new conversation from your active shipments.
+                    Select a conversation from the list to start messaging, or
+                    start a new conversation from your active shipments.
                   </p>
                 </div>
               </div>
