@@ -121,3 +121,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix for Leaflet map overlapping */
+.leaflet-container {
+  position: relative;
+  z-index: 0 !important;
+}
+
+.leaflet-tile-container {
+  position: absolute;
+  z-index: 0 !important;
+}
+
+.leaflet-pane {
+  z-index: 0 !important;
+}
+
+.leaflet-top, .leaflet-bottom {
+  z-index: 1 !important;
+}

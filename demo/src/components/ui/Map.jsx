@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -30,12 +30,42 @@ const Map = ({
   dropoffLocation = null,
   onClick = null
 }) => {
+  const mapRef = useRef(null);
+
+  // Add the CSS fix to prevent overlapping
+  useEffect(() => {
+    // Fix for map tiles overlapping other elements
+    const fixMapOverlap = () => {
+      if (mapRef.current) {
+        const mapContainer = mapRef.current;
+        const tiles = mapContainer.querySelectorAll('.leaflet-tile-container');
+        
+        tiles.forEach(tile => {
+          tile.style.position = 'absolute';
+          tile.style.zIndex = '0';
+        });
+      }
+    };
+
+    // Run the fix after a short delay to allow map to render
+    const timer = setTimeout(fixMapOverlap, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative" ref={mapRef}>
       <MapContainer 
         center={center} 
         zoom={zoom} 
-        style={{ height: '100%', width: '100%', borderRadius: '0.5rem' }}
+        style={{ 
+          height: '100%', 
+          width: '100%', 
+          borderRadius: '0.5rem',
+          position: 'relative',
+          zIndex: '0',
+          isolation: 'isolate'
+        }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

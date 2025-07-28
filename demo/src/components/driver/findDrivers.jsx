@@ -364,7 +364,19 @@ const FindDrivers = () => {
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-bold text-gray-800 mb-4">Driver Details</h3>
             <div className="flex items-center mb-4">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4" />
+                      <div className="relative w-16 h-16 mr-4">
+          <img 
+            src='driver1.webp' 
+            alt='Driver profile'
+            className="w-16 h-16 rounded-xl object-cover border-2 border-gray-200"
+            onError={(e) => {
+              // Fallback to a default avatar if image fails to load
+              e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face';
+            }}
+          />
+          {/* Optional: Add online status indicator */}
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+        </div>
               <div>
                 <h4 className="font-bold">{selectedDriver?.name}</h4>
                 <div className="flex items-center mt-1">
@@ -523,7 +535,19 @@ const FindDrivers = () => {
           <div className="border border-gray-200 rounded-lg p-6">
             <h3 className="font-bold text-gray-800 mb-4">Driver Information</h3>
             <div className="flex items-center mb-4">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-4" />
+                      <div className="relative w-16 h-16 mr-4">
+          <img 
+            src='driver1.webp'
+            alt='Driver profile'
+            className="w-16 h-16 rounded-xl object-cover border-2 border-gray-200"
+            onError={(e) => {
+              // Fallback to a default avatar if image fails to load
+              e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face';
+            }}
+          />
+          {/* Optional: Add online status indicator */}
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+        </div>
               <div>
                 <h4 className="font-bold">{selectedDriver?.name}</h4>
                 <div className="flex items-center mt-1">
